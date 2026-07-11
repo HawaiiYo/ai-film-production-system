@@ -248,9 +248,9 @@ nicol-skills/
 
 - [x] Phase 1: 基础设施搭建（目录结构、CLAUDE.md、README.md、SKILL.md）
 - [x] Phase 2: 知识库构建（电影流程、Prompt工程、工具指南）
-- [ ] Phase 3: 核心Agent开发（7个Agent）
-- [ ] Phase 4: 集成与示例（端到端科幻悬疑片示例）
-- [ ] Phase 5: 扩展Agent（后期制作 + 宣传物料）
+- [x] Phase 3: 核心Agent开发（7个Agent）
+- [x] Phase 4: 集成与示例（端到端科幻悬疑片示例）
+- [x] Phase 5: 扩展Agent（后期制作 + 宣传物料）
 
 ---
 
