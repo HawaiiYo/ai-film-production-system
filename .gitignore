@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude
+.claude/
+.claude.json
+
+# Logs
+*.log
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
