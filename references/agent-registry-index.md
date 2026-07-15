@@ -2,6 +2,15 @@
 
 > 三层检索架构的Layer 1：所有Agent和参考文档的元数据索引，用于快速路由和token预算管理
 
+> **v1.2 更新（2026-07）**：SKILL.md 文件大幅瘦身
+> - Agent SKILL.md 总行数：7,076 → **3,426** (-52%)
+> - Resources 提取到 references/，从 7 → **30+** 个
+> - 31 位导演详细风格本地化到 `agents/director-style/directors/`
+> - Storyboard Agent 1,966 → 309 行 (-84%)
+> - Prompt Engineer 1,230 → 391 行 (-68%)
+> - Scene Prop 810 → 381 行 (-53%)
+> - Token 估算已同步校准
+
 ---
 
 ## 一、Agent能力卡片
@@ -112,6 +121,19 @@ priority: 4
 ```yaml
 agent_id: storyboard
 name: 分镜故事板Agent
+v1.2_skill_lines: 309 (was 1966, -84%)
+v1.2_load_strategy: lazy_summary_then_lazy_full
+triggers: ["分镜设计", "镜头分解", "storyboard", "shot list"]
+capabilities_v1.2:
+  - 镜头分镜 (依赖: shot-size-guide, camera-movement-guide, composition-types)
+  - Seedance prompt 生成 (依赖: seedance-prompt-templates)
+  - 连贯性检查 (依赖: continuity-rules, 180-degree-rule, emotion-cinematography-mapping)
+  - 输出分镜表 (依赖: storyboard-layouts, annotation-standards)
+  - 扩展板型 (依赖: extended-board-types)
+references_required: ~10 files, ~1000 lines total
+```
+agent_id: storyboard
+name: 分镜故事板Agent
 role: Cinematographer + Storyboard Artist / 摄影师+分镜师
 trigger_words: ["分镜设计", "故事板", "镜头设计", "Seedance prompt"]
 capabilities:
@@ -138,11 +160,11 @@ role: Post-Production Supervisor + Technical Director + QC Inspector
 trigger_words: ["Prompt优化", "AI生成指令", "生成指令表", "Prompt工程", "AI Generation Sheet", "最终输出"]
 capabilities:
   - 收集所有上游Agent产出
-  - GPT-image-2 prompt优化
-  - Seedance prompt优化
-  - 全量一致性交叉检查
-  - Negative prompts管理
-  - 技术参数建议（分辨率/帧率/seed值）
+  - GPT-image-2 prompt优化（依赖 gpt-image2-templates）
+  - Seedance prompt优化（依赖 seedance-prompt-templates, seedance-guide）
+  - 全量一致性交叉检查（依赖 consistency-check-template, continuity-rules）
+  - Negative prompts管理（依赖 negative-prompt-library）
+  - 技术参数建议（依赖 seed-management-guide）
   - 组装AI Generation Sheet
 input_types: ["所有上游Agent产出", "角色圣经", "场景圣经", "分镜表"]
 output_types: ["AI Generation Sheet", "完整prompt合集", "一致性检查报告", "参数建议表"]
@@ -260,19 +282,77 @@ priority: 9
 
 ---
 
-## 二、参考文档索引
+## 二、参考文档索引（v1.2 已迁移到 agent 本地 references）
 
-| 文档 | 路径 | 大小 | 缓存策略 | 适用Agent |
-|------|------|------|---------|----------|
-| 电影制作流程 | `references/film-production-pipeline.md` | ~351行 | cache_stable | ALL |
-| Prompt工程指南 | `references/prompt-engineering-guide.md` | ~329行 | cache_stable | prompt-engineer, character-design, scene-prop, storyboard |
-| Seedance指南 | `references/seedance-guide.md` | ~239行 | cache_stable | storyboard, prompt-engineer, seedance-composer |
-| GPT-image-2指南 | `references/gpt-image2-guide.md` | — | cache_stable | character-design, scene-prop, prompt-engineer |
-| 情绪→运镜映射 | `references/emotion-cinematography-mapping.md` | 新建 | cache_stable | emotion-system, storyboard |
-| 连贯性规则 | `references/continuity-rules.md` | 新建 | cache_stable | storyboard |
-| Agent注册索引 | `references/agent-registry-index.md` | 本文件 | cache_stable | agent-registry |
+### agents/storyboard/references/（13 个，storyboard 本地）
+| 文档 | cache | 适用Agent |
+|------|-------|----------|
+| shot-size-guide.md | cache_stable | storyboard |
+| camera-movement-guide.md | cache_stable | storyboard |
+| composition-types.md | cache_stable | storyboard |
+| transition-types.md | cache_stable | storyboard |
+| storyboard-layouts.md | cache_stable | storyboard |
+| lens-tech-reference.md | cache_stable | storyboard |
+| arrow-notation-system.md | cache_stable | storyboard |
+| blocking-notation.md | cache_stable | storyboard |
+| audio-notation.md | cache_stable | storyboard |
+| lighting-notation.md | cache_stable | storyboard |
+| vfx-notation.md | cache_stable | storyboard |
+| annotation-standards.md | cache_stable | storyboard |
+| extended-board-types.md | cache_stable | storyboard |
 
----
+### agents/prompt-engineer/references/（5 个，prompt-engineer 本地）
+| 文档 | 适用Agent |
+|------|----------|
+| gpt-image2-templates.md | prompt-engineer (主), character-design, scene-prop |
+| seedance-prompt-templates.md | prompt-engineer (主), storyboard, seedance-composer |
+| negative-prompt-library.md | prompt-engineer |
+| seed-management-guide.md | prompt-engineer |
+| consistency-check-template.md | prompt-engineer |
+
+### agents/scene-prop/references/（3 个，scene-prop 本地）
+| 文档 | 适用Agent |
+|------|----------|
+| lighting-reference.md | scene-prop (主), storyboard |
+| material-reference.md | scene-prop |
+| scene-type-reference.md | scene-prop |
+
+### agents/character-design/references/（1 个，character-design 本地）
+| 文档 | 适用Agent |
+|------|----------|
+| character-design-reference.md | character-design |
+
+### agents/director-style/directors/（32 个，director-style 本地）
+| 文档 | 适用Agent |
+|------|----------|
+| INDEX.md | director-style |
+| 31 位导演 .md（黑泽明.md、诺兰.md、王家卫.md 等） | director-style |
+
+### 全局 references 目录（8 个，跨 agent 共享）
+| 文档 | 路径 | cache | 适用Agent |
+|------|------|-------|----------|
+| 电影制作流程 | `references/film-production-pipeline.md` | cache_stable | ALL |
+| Prompt工程指南 | `references/prompt-engineering-guide.md` | cache_stable | prompt-engineer, character-design, scene-prop, storyboard |
+| Seedance指南 | `references/seedance-guide.md` | cache_stable | storyboard, prompt-engineer, seedance-composer |
+| GPT-image-2指南 | `references/gpt-image2-guide.md` | cache_stable | character-design, scene-prop, prompt-engineer |
+| 情绪→运镜映射 | `references/emotion-cinematography-mapping.md` | cache_stable | emotion-system, storyboard |
+| 连贯性规则 | `references/continuity-rules.md` | cache_stable | storyboard |
+| 180度规则 | `references/180-degree-rule.md` | cache_stable | storyboard |
+| Agent注册索引 | `references/agent-registry-index.md` | cache_stable | agent-registry |
+
+### templates/ 目录（项目级输出模板，4 个，跨 agent 共用）
+| 文档 | 路径 | 使用Agent |
+|------|------|----------|
+| 角色圣经 | `templates/character-bible.md` | character-design |
+| 场景圣经 | `templates/scene-bible.md` | scene-prop |
+| 分镜表 | `templates/storyboard-table.md` | storyboard |
+| AI生成指令表 | `templates/ai-generation-sheet.md` | prompt-engineer |
+
+### examples/ 目录（项目级示例，跨项目复用）
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| ECHO 时空回声 | `examples/sci-fi-thriller-example/ECHO-Temporal-Echoes.md` | v1.1 sci-fi thriller 示例 |
+| 竹叶飞刀 | `examples/bamboo-flying-dagger/Bamboo-Flying-Dagger-Production-Bible.md` | 武侠示例 |
 
 ## 三、模板文档索引
 

@@ -22,19 +22,27 @@
 - 🔗 **分镜连贯性系统**：空间坐标系 + 180度规则 + 视线匹配 + 连贯性检查
 - 🎬 **Seedance Composer**：即时对话式prompt生成 + 参数调优 + 迭代优化
 
+### v1.2 优化（2026-07）
+- **Agent 瘦身**：SKILL.md 总行数 7,076 → 3,426 (-52%)
+- **领域知识本地化**：references/ 从 7 个 → 30+ 个独立知识文件
+- **导演文档本地化**：31 位导演详细风格从外部项目 → `agents/director-style/directors/`
+- **Storyboard 大瘦身**：1,966 → 309 行 (-84%)，原 910 行参考知识拆为 14 个独立 references
+- **Prompt Engineer 重写**：1,230 → 391 行 (-68%)，融入最新 GPT-image-2 / Seedance 实践
+- **检索式 SKILL.md**：每个 Agent 的 SKILL.md 末尾含"检索指引速查"，告诉 Claude 何时读哪个 references
+
 ## 系统架构
 
 ```
 用户输入故事概念
     → 🎛️ Agent Registry (智能路由 + token预算管理)
         → 🎯 流程统筹Agent (组建虚拟剧组)
-            → 🎨 导演风格Agent (匹配导演+风格指南)
+            → 🎨 导演风格Agent (匹配导演+风格指南) ← 检索 agents/director-style/directors/
             → 📖 剧本Agent (完整剧本+场景分解)
             → 🎭 情绪系统Agent (情绪分析+运镜映射) ← v1.1新增
-            → 👤 角色设计Agent (角色圣经+GPT-image-2 prompt)
-            → 🏗️ 场景道具Agent (场景圣经+参考图prompt)
-            → 🎬 分镜故事板Agent (分镜表+连贯性检查+Seedance prompt)
-            → 🔧 Prompt工程Agent (优化prompt+一致性检查)
+            → 👤 角色设计Agent (角色圣经+GPT-image-2 prompt) ← 检索 character-design-reference.md
+            → 🏗️ 场景道具Agent (场景圣经+参考图prompt) ← 检索 scene-type-reference.md
+            → 🎬 分镜故事板Agent (分镜表+连贯性检查+Seedance prompt) ← 检索 cinematography 14 文件
+            → 🔧 Prompt工程Agent (优化prompt+一致性检查) ← 检索 prompt 模板库
             → 🎬 Seedance Composer (即时对话式prompt生成) ← v1.1新增
                 → 🖼️ 最终AI生成指令 (可执行输出)
 ```
@@ -117,30 +125,87 @@ nicol-skills/
 ├── CLAUDE.md                    ← 当前文件
 ├── README.md                    # 用户文档
 ├── SKILL.md                     # 主技能入口
-├── agents/                      # Agent定义
+├── agents/                      # Agent定义（每个Agent本地references）
 │   ├── agent-registry/          # Agent注册中心（v1.1新增）
+│   │   ├── SKILL.md
+│   │   └── references/          # （如需本地化）
 │   ├── executive-producer/      # 流程统筹
+│   │   └── SKILL.md
 │   ├── screenplay/              # 剧本
+│   │   └── SKILL.md
 │   ├── emotion-system/          # 情绪系统（v1.1新增）
+│   │   └── SKILL.md
 │   ├── character-design/        # 角色设计
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── character-design-reference.md
 │   ├── scene-prop/              # 场景道具
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       ├── lighting-reference.md
+│   │       ├── material-reference.md
+│   │       └── scene-type-reference.md
 │   ├── storyboard/              # 分镜故事板
+│   │   ├── SKILL.md
+│   │   └── references/          # 13个镜头技术文件
+│   │       ├── shot-size-guide.md
+│   │       ├── camera-movement-guide.md
+│   │       ├── composition-types.md
+│   │       ├── transition-types.md
+│   │       ├── storyboard-layouts.md
+│   │       ├── lens-tech-reference.md
+│   │       ├── arrow-notation-system.md
+│   │       ├── blocking-notation.md
+│   │       ├── audio-notation.md
+│   │       ├── lighting-notation.md
+│   │       ├── vfx-notation.md
+│   │       ├── annotation-standards.md
+│   │       └── extended-board-types.md
 │   ├── director-style/          # 导演风格
+│   │   ├── SKILL.md
+│   │   └── directors/            # 32个文件：INDEX.md + 31位导演详细分析
 │   ├── prompt-engineer/         # Prompt工程
+│   │   ├── SKILL.md
+│   │   └── references/          # 5个prompt模板库
+│   │       ├── gpt-image2-templates.md
+│   │       ├── seedance-prompt-templates.md
+│   │       ├── negative-prompt-library.md
+│   │       ├── seed-management-guide.md
+│   │       └── consistency-check-template.md
 │   ├── seedance-composer/       # Seedance Prompt生成（v1.1新增）
+│   │   └── SKILL.md
 │   ├── post-production/         # 后期制作（扩展）
+│   │   └── SKILL.md
 │   └── marketing-assets/        # 宣传物料（扩展）
-├── references/                  # 共享知识库
-│   ├── agent-registry-index.md  # Agent元数据索引（v1.1新增）
-│   ├── emotion-cinematography-mapping.md  # 情绪→摄影映射（v1.1新增）
-│   ├── continuity-rules.md      # 连贯性规则（v1.1新增）
+│       └── SKILL.md
+├── references/                  # 全局共享知识库（跨agent）
+│   ├── agent-registry-index.md  # Agent元数据索引
+│   ├── emotion-cinematography-mapping.md  # 情绪→摄影映射
+│   ├── continuity-rules.md      # 连贯性规则
+│   ├── 180-degree-rule.md       # 180度规则
 │   ├── film-production-pipeline.md
 │   ├── prompt-engineering-guide.md
 │   ├── gpt-image2-guide.md
-│   └── seedance-guide.md
-├── templates/                   # 输出模板
-└── examples/                    # 使用示例
+│   ├── seedance-guide.md
+│
+├── templates/                   # 输出模板（全局共用）
+├── examples/                    # 使用示例（全局共用）
+└── agents/[name]/directors/ 等 # 仅 director-style 独有 directors/ 子目录
 ```
+
+### v1.2 references 文件分布策略
+
+| 位置 | 文件数 | 说明 |
+|------|--------|------|
+| `references/` (全局) | 8 | 跨 agent 共享的全局知识 |
+| `agents/director-style/directors/` | 32 | 31 位导演 + INDEX.md（director-style 专属） |
+| `agents/storyboard/references/` | 13 | 镜头技术专属 |
+| `agents/prompt-engineer/references/` | 5 | Prompt 模板库专属 |
+| `agents/scene-prop/references/` | 3 | 场景设计参考专属 |
+| `agents/character-design/references/` | 1 | 角色设计参考专属 |
+| **总计** | **62 个** references 文件 | |
+| + `templates/`（4 个全局共用）| 4 | 输出模板（跨 agent） |
+| + `examples/`（2 个全局共用）| 2 | 示例项目（跨项目） |
 
 ## 关键设计原则
 
