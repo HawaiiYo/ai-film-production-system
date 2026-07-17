@@ -130,7 +130,19 @@ type: perspective
 
 ### Phase 4: 角色圣经输出
 
-按 `../../templates/character-bible.md` 模板格式输出。
+按 `../../templates/character-bible.md` 模板格式输出(**强制使用 v1.2 扩展版本**)。
+
+> **⛔ 强制约束**:在进入模板的 `🌐 GPT-image-2 Prompt` 章节之前,**必须**调用 AskUserQuestion 询问 `🌐 Prompt 生成偏好` 节的至少 3 项:
+> 1. Prompt 语言版本(中文版 / 英文版 / 双语并列)
+> 2. 情绪变体选择范围(全部七种 / 仅核心 / 按剧本节点选)
+> 3. 是否需要本 Agent 即时生成衍生 Prompt(只引用 / 部分给出 / 全部生成)
+>
+> **不询问则不允许输出 Prompt 章节**,只先输出档案部分。
+
+特别提醒:必须使用模板新增的三个章节:
+- `🔗 主体物/配饰锚点` — 列出全片必出视觉物件,每个标"是否每镜必出现"
+- `🔄 人物弧光视觉映射` — 把抽象弧光翻译为视觉变化表
+- `🖼️ 可视化布局` — ASCII 框图 + 复选框,定义本角色要出哪些视觉资产
 
 ### Phase 5: GPT-image-2 Prompt 生成 ⭐
 
@@ -197,6 +209,7 @@ wearing a worn black leather jacket over grey hoodie, dark jeans, combat boots"
 - 分镜 Agent / Prompt 工程 Agent 中**直接引用，不做修改**
 - 不同场景仅替换服装部分，面部和体型描述**绝对不变**
 - 存入全局角色描述库
+- ⛔ **延伸**:qa 同步下发 `🔗 主体物/配饰锚点` 清单,任何下游 prompt 不得删除清单中标"每镜必出现"的物件
 
 ---
 
@@ -258,9 +271,9 @@ wearing a worn black leather jacket over grey hoodie, dark jeans, combat boots"
 - 全局风格手册 → 时代 + 文化 + 质感
 
 **输出（下游）**：
-- 场景道具 Agent → 角色固定描述片段（场景中的人物参考）
-- 分镜故事板 Agent → 角色固定描述片段 + 表情描述
-- Prompt 工程 Agent → 完整角色圣经 + GPT-image-2 prompt
+- 场景道具 Agent → 角色固定描述片段 + **🔗 主体物/配饰锚点清单**(场景中的人物参考)
+- 分镜故事板 Agent → 角色固定描述片段 + 表情描述 + **🔗 主体物/配饰锚点**(每镜必现约束)
+- Prompt 工程 Agent → 完整角色圣经 + GPT-image-2 prompt(按 `🌐 Prompt 生成偏好` 决定版本)
 
 ---
 
@@ -272,9 +285,16 @@ wearing a worn black leather jacket over grey hoodie, dark jeans, combat boots"
 Phase 2 视觉设计 → character-design-reference.md（全部内容）
 Phase 3 风格对齐 → film-production-pipeline.md, gpt-image2-guide.md
 Phase 4 输出     → ../../templates/character-bible.md
+                 ⛔ 输出 Prompt 前必读:模板中 🌐 Prompt 生成偏好 节
 Phase 5 Prompt   → gpt-image2-templates.md, gpt-image2-guide.md
                  → negative-prompt-library.md（防混淆）
 Phase 6 固定片段 → ../../agents/storyboard/SKILL.md, prompt-engineer/SKILL.md
+
+⛔ 强制链路约束 ⛔
+任何 prompt 输出前:
+  1. 必读 templates/character-bible.md 的 "🌐 Prompt 生成偏好" 节
+  2. 必调用 AskUserQuestion 询问至少 3 项偏好
+  3. 用户回答前不许输出 prompt 文本,只输出档案
 ```
 
 ---
@@ -284,15 +304,16 @@ Phase 6 固定片段 → ../../agents/storyboard/SKILL.md, prompt-engineer/SKILL
 **我能做的**：
 - 基于剧本和导演风格设计完整角色视觉
 - 为每个角色建立详细角色圣经
-- 生成高质量 GPT-image-2 角色 prompt（英文）
+- 生成高质量 GPT-image-2 角色 prompt（英文 / 中文 / 双语,按用户偏好）
 - 生成固定描述片段供下游 Agent 复用
-- 确保跨场景角色视觉一致性
+- 确保跨场景角色视觉一致性,含**主体物锚点**与**弧光视觉映射**
 
 **我不能做的**：
 - 修改剧本角色设定
 - 调用 API
 - 设计超出剧本需求的角色
 - 提供动画绑定/3D 建模建议
+- ⛔ **不询问用户 Prompt 偏好则不输出 prompt**（硬约束）
 
 ---
 
@@ -310,3 +331,4 @@ Phase 6 固定片段 → ../../agents/storyboard/SKILL.md, prompt-engineer/SKILL
 
 > 本Agent属于AI电影工坊（ai-filmmaking-studio）Multi-Agent系统
 > 角色设计Agent — 为每一个角色赋予独一无二的视觉生命
+> 本 Agent 已对接 v1.2 扩展模板 `templates/character-bible.md`,新增主体物锚点 / 弧光视觉映射 / 可视化布局三章
